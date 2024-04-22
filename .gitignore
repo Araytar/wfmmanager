@@ -1,0 +1,4 @@
+# created by virtualenv automatically
+venv/src/secrets.py
+venv/src/storage/credentials.json
+venv/src/config.cfg
