@@ -2,6 +2,8 @@ import warframemarket
 from cfgparser import loadcfg
 from colorama import Fore, init
 from datetime import datetime
+import time
+import os
 
 def cout(text, color) -> None:
     print(f"{color}{text}")
@@ -13,22 +15,47 @@ def spit(data):
     command = {"identifier": identifier, "parameter": parameter}
     return command
 
+def cmdlogin(_in) -> None:
+    if  spit(_in)["identifier"].lower() == "login":
+        #                     0 = email,                1 = password,              2 = platform,        3 = clientId
+        wfm.setUser(spit(_in)["parameter"][0], spit(_in)["parameter"][1], spit(_in)["parameter"][2], spit(_in)["parameter"][3])
+        cout("logging in", Fore.BLUE)
+        try:
+            wfm.login()
+            cout("logged in sucessfully", Fore.GREEN)
+            logged_in = True
+            time.sleep(0.2)
+            cout("Restarting...", Fore.GREEN)
+            time.sleep(0.7)
+            clear(_in)
+
+        except Exception as e:
+            cout("failed to login, " + e, Fore.RED)
+
+
+def cmdclear(_in) -> None:
+    if  spit(_in)["identifier"].lower() == "clear":
+        os.system('cls')
+        cout("Warframe Market Manager v"  + config["version"], Fore.LIGHTBLUE_EX)
+        if logged_in:
+            cout("Logged in as: ")
+        cout("Logged in as: " + wfm.user["ingame_name"], Fore.LIGHTBLUE_EX)
+
+def cmdexit(_in) -> None:
+    if spit(_in)["identifier"].lower() == "exit":
+        cout("Exiting...", Fore.GREEN)
+        time.sleep(0.7)
+        exit()
+
 
 def REPL() -> None:
     try:
         while True:
             try:
                 _in = input("WFMConsole >> ")
-                if  spit(_in)["identifier"].lower() == "login":
-                    #                     0 = email,                1 = password,              2 = platform,        3 = clientId
-                    wfm.setUser(spit(_in)["parameter"][0], spit(_in)["parameter"][1], spit(_in)["parameter"][2], spit(_in)["parameter"][3])
-                    cout("logging in", Fore.BLUE)
-                    try:
-                        wfm.login()
-                        cout("logged in sucessfully", Fore.GREEN)
-                    except:
-                        cout("failed to login", Fore.RED)
-
+                cmdlogin(_in)
+                cmdexit(_in)
+                cmdclear(_in)
 
             except Exception as e:
                 cout(f"{datetime.now().strftime(ftimestamp)} - WFMConsole >> Error: {e}", Fore.RED)
@@ -38,6 +65,8 @@ def REPL() -> None:
 
 if __name__ == "__main__":
     init(autoreset=True)
+
+    logged_in = False
     config = loadcfg()
     ftimestamp = "%Y-%m-%d %H:%M:%S"
 
