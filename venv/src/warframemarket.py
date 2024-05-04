@@ -3,10 +3,11 @@ import socket
 import json
 from cfgparser import loadcfg
 import base64
+import pprint
 
 class api:
 
-    def __init__(self, JWS) -> None:
+    def __init__(self, JWT) -> None:
         """
         It's an init, what about it?.
 
@@ -19,7 +20,7 @@ class api:
         #create thoudsands of variables
         self.user = {}
         self.device_id = socket.gethostname()
-        self.JWS = JWS
+        self.JWT = JWT
         self.email = None
         self.password = None
         self.platform = None
@@ -31,8 +32,10 @@ class api:
         self.session = requests.Session()
         self.session.headers.update({
             "User-Agent": "MarketManager/0.2.0, Developer: Araytar",
-            "authorization": "JWT " + self.JWS
+            "authorization": "JWT " + self.JWT,
+            "Languange": "en"
         })
+
 
 
     def setUser(self, email, password, platform, clientId="Client") -> None:
@@ -177,3 +180,14 @@ class api:
                 "linked_discord_profile": data["linked_accounts"]["discord_profile"],
                 "linked_github_profile": data["linked_accounts"]["github_profile"],
             }
+
+    def getAllItems(self):
+        response = self.session.get(url=self.BASEURL + "/items")
+        rawdata = response.json()
+        return rawdata
+
+    def getItem(self, item_name):
+        item_url = item_name.lower().replace(" ", "_")
+        response = self.session.get(self.BASEURL + f"/items/{item_url}")
+        print(response.json())
+        

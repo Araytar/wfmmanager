@@ -2,8 +2,11 @@ import warframemarket
 from cfgparser import loadcfg
 from colorama import Fore, init
 from datetime import datetime
+import database
 import time
 import os
+import json
+import base64
 
 def __getStorageCreds() -> dict:
     try:
@@ -44,7 +47,6 @@ def cmdlogin(_in) -> None:
 
         except Exception as e:
             cout("failed to login, " + e, Fore.RED)
-
 
 def cmdclear(_in) -> None:
     if  spit(_in)["identifier"].lower() == "clear":

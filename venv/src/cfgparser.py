@@ -20,5 +20,12 @@ def loadcfg():
         "autologin": rconfig.get("auth", "autologin"),
         "JWT": rconfig.get("auth", "JWT")
     }
-
     return config
+
+
+def loadlang() -> dict:
+    lang = {}
+
+    rlang = configparser.ConfigParser()
+    rlang.read("lang.cfg")
+    
