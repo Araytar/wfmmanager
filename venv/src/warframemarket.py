@@ -183,11 +183,12 @@ class api:
 
     def getAllItems(self):
         response = self.session.get(url=self.BASEURL + "/items")
-        rawdata = response.json()
-        return rawdata
+        data = response.json()
+        return data["payload"]["items"]
 
     def getItem(self, item_name):
         item_url = item_name.lower().replace(" ", "_")
         response = self.session.get(self.BASEURL + f"/items/{item_url}")
-        print(response.json())
+        data = response.json()
+        return data
         
